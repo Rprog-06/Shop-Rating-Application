@@ -32,7 +32,7 @@ function UserDashboard() {
         { store_id: storeId, rating },
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      fetchStores(); // refresh after rating
+      fetchStores(); 
     } catch (err) {
       console.error(err.response?.data?.message || "Error rating store");
     }
