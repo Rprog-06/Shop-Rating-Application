@@ -106,17 +106,17 @@ npm start
 Frontend will run on http://localhost:3000
 Backend on http://localhost:5000
 
-📊 Database Schema (simplified)
+ Database Schema (simplified)
 
-users
+1)users
 
 id, name, email, password, address, role
 
-stores
+2)stores
 
 id, name, email, address, owner_id (FK → users.id)
 
-ratings
+3)ratings
 
 id, user_id (FK → users.id), store_id (FK → stores.id), rating
 
@@ -126,6 +126,6 @@ Each user can only rate a store once (UNIQUE(user_id, store_id))
 
 
 
-Graphs for rating analytics
 
-Deployment (Vercel + Render/Heroku)
+
+
