@@ -35,28 +35,21 @@ exports.login = async (req, res) => {
     }
 
     const user = rows[0];
-    console.log("=== BACKEND LOGIN DEBUG ===");
-    console.log("Full database row:", JSON.stringify(rows[0], null, 2));
-    console.log("User role from database:", user.role);
-    console.log("Role type:", typeof user.role);
-    console.log("Role value as string:", String(user.role));
-    console.log("Role length:", user.role ? user.role.length : 'null');
-    console.log("Has role property:", user.hasOwnProperty('role'));
-    console.log("All user properties:", Object.keys(user));
-    console.log("All user values:", Object.values(user));
+    
+    
 
     // Ensure role has a valid value
     let userRole = "user"; // default fallback
 
     if (user.hasOwnProperty('role') && user.role !== null && user.role !== undefined && user.role !== '') {
       userRole = user.role;
-      console.log("✅ Using role from database:", userRole);
+      console.log("Using role from database:", userRole);
     } else {
-      console.log("❌ Role not found or empty in database, using default:", userRole);
-      console.log("❌ Database role value:", user.role);
+      console.log("Role not found or empty in database, using default:", userRole);
+      console.log("Database role value:", user.role);
     }
 
-    console.log("🔄 Final role to use:", userRole);
+    console.log("Final role to use:", userRole);
 
     const validPassword = await bcrypt.compare(password, user.password);
     if (!validPassword) {
@@ -69,7 +62,7 @@ exports.login = async (req, res) => {
       { expiresIn: "1h" }
     );
 
-    // ✅ send user details including role
+    //  send user details including role
     res.status(200).json({
       token,
       user: {
