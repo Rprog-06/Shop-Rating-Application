@@ -5,6 +5,7 @@ function AddStore() {
   const [form, setForm] = useState({ name: "", email: "", address: "", owner_id: "" });
   const [message, setMessage] = useState("");
   const token = localStorage.getItem("token");
+  const [errors, setErrors] = useState({});
 
   const handleSubmit = async (e) => {
     e.preventDefault();

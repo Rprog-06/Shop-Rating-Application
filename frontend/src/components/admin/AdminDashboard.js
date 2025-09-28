@@ -13,6 +13,9 @@ function AdminDashboard() {
   const [stores, setStores] = useState([]);
   const [filters, setFilters] = useState({ name: "", email: "", role: "" });
    const [isModalOpen, setIsModalOpen] = useState(false);
+   const [userSortConfig, setUserSortConfig] = useState({ key: null, direction: "asc" });
+const [storeSortConfig, setStoreSortConfig] = useState({ key: null, direction: "asc" });
+
   const navigate = useNavigate();
 
   const token = localStorage.getItem("token");
@@ -47,6 +50,42 @@ function AdminDashboard() {
     localStorage.removeItem("token");
     navigate("/");
   }
+   const sortData = (items, sortConfig={key:null,direction:
+"asc"
+   }) => {
+  if (!sortConfig.key) return items;
+  return [...items].sort((a, b) => {
+    if (a[sortConfig.key] < b[sortConfig.key]) {
+      return sortConfig.direction === "asc" ? -1 : 1;
+    }
+    if (a[sortConfig.key] > b[sortConfig.key]) {
+      return sortConfig.direction === "asc" ? 1 : -1;
+    }
+    return 0;
+  });
+};
+
+const requestSort = (key, type) => {
+  if (type === "user") {
+    let direction = "asc";
+    if (userSortConfig.key === key && userSortConfig.direction === "asc") {
+      direction = "desc";
+    }
+    setUserSortConfig({ key, direction });
+  } else if (type === "store") {
+    let direction = "asc";
+    if (storeSortConfig.key === key && storeSortConfig.direction === "asc") {
+      direction = "desc";
+    }
+    setStoreSortConfig({ key, direction });
+  }
+};
+
+const getArrow = (key, sortConfig) => {
+  if (sortConfig.key !== key) return "↕";
+  return sortConfig.direction === "asc" ? "↑" : "↓";
+};
+
 
   return (
     <div className="min-h-screen bg-gray-100 p-6">
@@ -115,27 +154,58 @@ function AdminDashboard() {
       <table className="min-w-full border border-gray-200 rounded-lg">
         <thead className="bg-gray-50">
           <tr>
-            <th className="px-4 py-2 text-left text-sm font-medium text-gray-600">Name</th>
-            <th className="px-4 py-2 text-left text-sm font-medium text-gray-600">Email</th>
-            <th className="px-4 py-2 text-left text-sm font-medium text-gray-600">Address</th>
-            <th className="px-4 py-2 text-left text-sm font-medium text-gray-600">Rating</th>
+            <th className="px-4 py-2 text-left text-sm font-medium text-gray-600 :hover cursor-pointer" onClick={() => requestSort("name","user")}>Name {getArrow("name",userSortConfig)}</th>
+            <th className="px-4 py-2 text-left text-sm font-medium text-gray-600 :hover cursor-pointer" onClick={() => requestSort("email","user")}>Email {getArrow("email",userSortConfig)}</th>
+            <th className="px-4 py-2 text-left text-sm font-medium text-gray-600 hover:cursor-pointer" onClick={() => requestSort("address","user")}>Address {getArrow("address",userSortConfig)}</th>
+            <th className="px-4 py-2 text-left text-sm font-medium text-gray-600 :hover cursor-pointer" onClick={() => requestSort("rating","user")}>Rating {getArrow("rating",userSortConfig)}</th>
           </tr>
         </thead>
         <tbody>
-          {stores.map((store) => (
-            <tr key={store.id} className="border-t hover:bg-gray-50">
-              <td className="px-4 py-2">{store.name}</td>
-              <td className="px-4 py-2">{store.email}</td>
-              <td className="px-4 py-2">{store.address}</td>
-              <td className="px-4 py-2">
-                {store.rating ? Number(store.rating).toFixed(1) : "N/A"}
-              </td>
+          {sortData(users,userSortConfig).map((u) => (
+            <tr key={u.id} className="border-t text-center">
+              <td className="py-2 px-4">{u.name}</td>
+              <td className="py-2 px-4">{u.email}</td>
+              <td className="py-2 px-4">{u.address}</td>
+              <td className="py-2 px-4">{u.rating ? Number(u.rating).toFixed(1) : "N/A"}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+
+      {/* Stores Table */}
+      <h3 className="text-xl font-semibold mt-8 mb-3">Stores</h3>
+      <table className="min-w-full bg-white shadow rounded-xl overflow-hidden">
+        <thead>
+          <tr className="bg-gray-200">
+            <th className="py-2 px-4 cursor-pointer" onClick={() => requestSort("name","store")}>
+              Name {getArrow("name",storeSortConfig)}
+            </th>
+            <th className="py-2 px-4 cursor-pointer" onClick={() => requestSort("email","store")}>
+              Email {getArrow("email",storeSortConfig)}
+            </th>
+            <th className="py-2 px-4 cursor-pointer" onClick={() => requestSort("address","store")}>
+              Address {getArrow("address",storeSortConfig)}
+            </th>
+            <th className="py-2 px-4 cursor-pointer" onClick={() => requestSort("rating","store")}>
+              Rating {getArrow("rating",storeSortConfig)}
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {sortData(stores,storeSortConfig).map((s) => (
+            <tr key={s.id} className="border-t text-center">
+              <td className="py-2 px-4">{s.name}</td>
+              <td className="py-2 px-4">{s.email}</td>
+              <td className="py-2 px-4">{s.address}</td>
+              <td className="py-2 px-4">{s.rating ? Number(s.rating).toFixed(1) : "N/A"}</td>
             </tr>
           ))}
         </tbody>
       </table>
     </div>
-  </div>
-);
+    </div>
+  );
 }
+
+
 export default AdminDashboard;
