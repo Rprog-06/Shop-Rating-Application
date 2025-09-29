@@ -75,7 +75,7 @@ MySQL (with foreign key constraints & rating relations)
 
  Installation
 1)Clone Repository
-git clone https://github.com/Rprog-06/store-rating-platform.git
+git clone :https://github.com/Rprog-06/Shop-Rating-Application.git
 cd store-rating-platform
 
 2) Backend Setup
